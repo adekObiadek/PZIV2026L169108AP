@@ -50,7 +50,7 @@ def test_client_receives_objects_from_server(running_server):
     assert all(isinstance(item, Plant) for item in result["responses"]["Plant"])
 
 
-def test_server_refuses_client_after_max_clients(running_server):
+def test_server_refuses_client_after_max_clients(running_server, capsys):
     sockets = []
     try:
         for client_id in range(server.MAX_CLIENTS):
@@ -66,6 +66,10 @@ def test_server_refuses_client_after_max_clients(running_server):
 
         assert refused_socket.recv(1024).decode("utf-8") == "REFUSED"
         refused_socket.close()
+
+        time.sleep(0.05)
+        captured_output = capsys.readouterr().out
+        assert "Odmowa polaczenia dla klienta 4" in captured_output
     finally:
         for client_socket in sockets:
             client_socket.close()

@@ -28,12 +28,10 @@ def _delayed_response():
     time.sleep(random.uniform(*SLEEP_RANGE))
 
 
-def handle_client(client_socket, client_address, data):
+def handle_client(client_socket, client_address, client_id, data):
     global _active_clients
 
-    client_id = "unknown"
     try:
-        client_id = client_socket.recv(BUFFER_SIZE).decode("utf-8").strip()
         print(f"Obsluga klienta {client_id} z adresu {client_address}")
         client_socket.sendall(b"OK")
 
@@ -86,17 +84,24 @@ def run_server(host=HOST, port=PORT, max_clients=MAX_CLIENTS, stop_event=None):
             except socket.timeout:
                 continue
 
+            client_id = client_socket.recv(BUFFER_SIZE).decode("utf-8").strip()
+            if not client_id:
+                client_id = "unknown"
+
             with _active_clients_lock:
                 if _active_clients >= max_clients:
                     client_socket.sendall(b"REFUSED")
                     client_socket.close()
-                    print(f"Odmowa polaczenia dla {client_address}")
+                    print(
+                        f"Odmowa polaczenia dla klienta {client_id} "
+                        f"z adresu {client_address}"
+                    )
                     continue
                 _active_clients += 1
 
             client_thread = threading.Thread(
                 target=handle_client,
-                args=(client_socket, client_address, data),
+                args=(client_socket, client_address, client_id, data),
                 daemon=True,
             )
             client_thread.start()
