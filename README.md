@@ -158,3 +158,6 @@ W projekcie wykorzystano narzędzia AI, w tym ChatGPT/Codex, do przygotowania
 szkieletu projektu, wygenerowania przykładowego kodu serwera i klienta,
 przygotowania testów oraz pomocy w stworzeniu dokumentacji README. Kod został
 przeanalizowany i dostosowany do wymagań projektu przez autora.
+Przykladowe prompty: 
+1. Przygotuj mi plan aplikacji do podlewania roslin w python, ktora spelnia wymagania z zalacznika.
+2. Czy to repozytorium https://github.com/adekObiadek/PZIV2026L169108AP.git jest dobrym rozwiazaniem do wymagan z zalacznika.
