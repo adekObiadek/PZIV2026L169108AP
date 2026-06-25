@@ -18,7 +18,7 @@ _active_clients = 0
 _active_clients_lock = threading.Lock()
 
 
-def _send_pickle(client_socket, data):
+def send_pickle(client_socket, data):
     serialized_data = pickle.dumps(data)
     message_size = struct.pack("!I", len(serialized_data))
     client_socket.sendall(message_size + serialized_data)
@@ -47,7 +47,7 @@ def handle_client(client_socket, client_address, data):
             if class_name in {"Plant", "Sensor", "WateringSchedule"}:
                 objects = get_objects_by_class(data, class_name)
                 print(f"Klient {client_id}: wysylam {class_name}: {objects}")
-                _send_pickle(client_socket, objects)
+                send_pickle(client_socket, objects)
             else:
                 wrong_type_object = {
                     "error": "Niepoprawna klasa",
@@ -57,7 +57,7 @@ def handle_client(client_socket, client_address, data):
                     f"Klient {client_id}: wysylam bledny typ dla {class_name}: "
                     f"{wrong_type_object}"
                 )
-                _send_pickle(client_socket, wrong_type_object)
+                send_pickle(client_socket, wrong_type_object)
     except (ConnectionError, OSError) as error:
         print(f"Blad polaczenia z klientem {client_id}: {error}")
     finally:
