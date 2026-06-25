@@ -5,7 +5,7 @@ import time
 import pytest
 
 import server
-from client import run_client
+from client import run_client, validate_response
 from models import Plant
 
 
@@ -80,3 +80,5 @@ def test_server_sends_wrong_type_for_unknown_class(running_server):
 
     assert result["status"] == "OK"
     assert isinstance(result["responses"]["Animal"], dict)
+    with pytest.raises(TypeError, match="Nieznana klasa odpowiedzi: Animal"):
+        validate_response(result["responses"]["Animal"], "Animal")
